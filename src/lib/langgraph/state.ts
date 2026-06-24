@@ -1,5 +1,5 @@
 import { BaseMessage } from "@langchain/core/messages";
-import { ResearchReport, CompanyData } from "../../types";
+import { ResearchReport } from "../types";
 
 export interface AgentState {
   ticker: string;

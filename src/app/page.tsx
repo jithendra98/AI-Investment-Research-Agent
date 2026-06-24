@@ -11,6 +11,7 @@ import { FinancialMetrics } from "@/components/dashboard/financial-metrics";
 import { SentimentPanel } from "@/components/dashboard/sentiment-panel";
 import { RiskAssessment } from "@/components/dashboard/risk-assessment";
 import { ResultsSkeleton } from "@/components/dashboard/results-skeleton";
+import { InvestmentThesis } from "@/components/dashboard/investment-thesis";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResearch } from "@/hooks/use-research";
 

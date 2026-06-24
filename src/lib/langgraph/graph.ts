@@ -14,31 +14,19 @@ const channels = {
   error: { value: (x: string, y: string) => y ?? x }
 };
 
-const checkAllDone = (s: AgentState) => {
-  if (s.error) return END;
-  if (s.companyOverview && s.financialData && s.newsData) {
-    return "riskAgent";
-  }
-  return END;
-};
-
+// Sequential workflow: each agent feeds into the next.
+// This is reliable and ensures each agent can use prior agents' data.
 const workflow = new StateGraph<AgentState>({ channels: channels as any })
   .addNode("researchAgent", researchAgent)
   .addNode("financialAgent", financialAgent)
   .addNode("newsAgent", newsAgent)
   .addNode("riskAgent", riskAgent)
   .addNode("decisionAgent", decisionAgent)
-  
-  // Parallel execution of the first 3 agents
+
   .addEdge(START, "researchAgent")
-  .addEdge(START, "financialAgent")
-  .addEdge(START, "newsAgent")
-  
-  // Fan-in: wait for all 3 to complete before moving to Risk
-  .addConditionalEdges("researchAgent", checkAllDone)
-  .addConditionalEdges("financialAgent", checkAllDone)
-  .addConditionalEdges("newsAgent", checkAllDone)
-  
+  .addConditionalEdges("researchAgent", (s) => s.error ? END : "financialAgent")
+  .addConditionalEdges("financialAgent", (s) => s.error ? END : "newsAgent")
+  .addConditionalEdges("newsAgent", (s) => s.error ? END : "riskAgent")
   .addConditionalEdges("riskAgent", (s) => s.error ? END : "decisionAgent")
   .addEdge("decisionAgent", END);
 
