@@ -5,21 +5,9 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
 import { ResearchReport } from "../types";
 
-// ─── Helper: safely load yahoo-finance2 at runtime ───────────────────────────
-// yahoo-finance2 is an ESM-only package. Next.js Webpack mangles the default
-// export when it bundles it statically. We load it via a dynamic import() and
-// then handle the double-wrapping that Webpack sometimes creates.
-async function getYahooFinance() {
-  const mod: any = await import("yahoo-finance2");
-  // Webpack may wrap it as { default: { default: actualModule } }
-  const yf = mod?.default?.default ?? mod?.default ?? mod;
-  if (typeof yf.quote !== "function") {
-    throw new Error(
-      `yahoo-finance2 loaded but .quote is missing. Keys on module: [${Object.keys(mod)}], keys on default: [${Object.keys(mod?.default ?? {})}]`
-    );
-  }
-  return yf;
-}
+// Static import — serverExternalPackages in next.config.ts ensures
+// Webpack does NOT bundle this, letting Node.js resolve the ESM export correctly.
+import yahooFinance from "yahoo-finance2";
 
 // ─── Agent 1: Research Agent ─────────────────────────────────────────────────
 export const researchAgent = async (state: AgentState): Promise<Partial<AgentState>> => {
@@ -45,9 +33,7 @@ export const researchAgent = async (state: AgentState): Promise<Partial<AgentSta
 // ─── Agent 2: Financial Analysis Agent ───────────────────────────────────────
 export const financialAgent = async (state: AgentState): Promise<Partial<AgentState>> => {
   try {
-    // Fetch real-time market data via yahoo-finance2
-    const yf = await getYahooFinance();
-    const quote = await yf.quote(state.ticker);
+    const quote = await (yahooFinance as any).quote(state.ticker);
 
     const parser = StructuredOutputParser.fromZodSchema(z.object({
       financialScore: z.number().min(0).max(100),
