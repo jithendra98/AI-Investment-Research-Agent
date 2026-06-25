@@ -5,15 +5,15 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
 import { ResearchReport } from "../types";
 
-// yahoo-finance2 is ESM-only. Webpack mangles both static and dynamic imports
-// even with serverExternalPackages. eval() hides the import from Webpack's
-// static analysis, so Node.js handles it natively at runtime.
-// The default export is a CLASS CONSTRUCTOR — must be instantiated with new().
+// We must use standard dynamic import() so Vercel's build tracer detects the dependency
+// and includes it in the production lambda. Webpack will mangle it, so we handle the
+// double-default wrapping and instantiate the class manually.
 let _yfInstance: any = null;
 async function getYahooFinance() {
   if (_yfInstance) return _yfInstance;
-  const mod = await eval('import("yahoo-finance2")');
-  const YahooFinance = mod.default;
+  const mod: any = await import("yahoo-finance2");
+  // Webpack might wrap the class constructor in .default or .default.default
+  const YahooFinance = mod?.default?.default ?? mod?.default ?? mod;
   _yfInstance = new YahooFinance();
   return _yfInstance;
 }
