@@ -12,6 +12,12 @@
 
 ---
 
+## 🌐 Live Demo
+**https://ai-investment-research-agent-lemon.vercel.app/**
+> No setup needed — open and search any ticker instantly.
+
+---
+
 ## 📋 Overview — What It Does
 
 This application is an **AI Investment Research Agent** that takes a stock ticker symbol (e.g., `AAPL`, `TSLA`, `GOOGL`) as input and produces a detailed investment research report by orchestrating **5 specialized AI agents** in a LangGraph workflow:
@@ -39,6 +45,8 @@ This application is an **AI Investment Research Agent** that takes a stock ticke
 - **Node.js** v18 or higher
 - **npm** (comes with Node.js)
 - A **Google Gemini API Key** (free tier works) — get one at [aistudio.google.com](https://aistudio.google.com/apikey)
+
+**Alternatively**, visit the [live deployment](https://ai-investment-research-agent-lemon.vercel.app/) directly — no local setup required.
 
 ### Installation
 
