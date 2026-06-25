@@ -72,7 +72,7 @@ Open your browser and navigate to: **http://localhost:3000**
 ### Usage
 1. Type a stock ticker (e.g., `AAPL`, `TSLA`, `MSFT`) into the search bar
 2. Click **Analyze** or press Enter
-3. Watch the 5 AI agents progress in real-time
+3. Watch agent progress — the UI animates each step while the backend processes all agents sequentially in a single request
 4. View the comprehensive research report with scores, metrics, and recommendations
 
 ### Environment Variables
@@ -201,7 +201,7 @@ src/
 | Trade-off | Reason |
 |-----------|--------|
 | **No persistent database** | Reports are generated on-demand and not saved. Adding a database (e.g., Supabase) would enable the "Saved Reports" page but adds complexity beyond the assignment scope. |
-| **No real-time news API** | Free news APIs (NewsAPI, etc.) have strict rate limits. The Sentiment Agent uses Gemini's training data knowledge instead. A production version would integrate a paid news API. |
+| **No real-time news API** | The Sentiment Agent uses Gemini's training knowledge rather than live news feeds. A production build would integrate NewsAPI or Alpha Vantage for current headlines. |
 | **No WebSocket streaming** | Agent progress is simulated on the frontend with timers. True streaming would require Server-Sent Events or WebSockets for real-time agent updates. |
 | **No caching layer** | Each search makes fresh API calls. Adding Redis/in-memory caching would reduce API usage and speed up repeated queries. |
 | **Sequential instead of parallel** | Adds ~5-8 seconds of latency. With a more mature LangGraph JS SDK or a Python backend, true parallel execution would cut this significantly. |
