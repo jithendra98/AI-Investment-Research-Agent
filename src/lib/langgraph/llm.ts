@@ -8,12 +8,24 @@ export const getGeminiModel = (temperature = 0.2) => {
     );
   }
 
-  return new ChatGoogleGenerativeAI({
+  const primaryModel = new ChatGoogleGenerativeAI({
     modelName: "gemini-2.5-flash",
     maxOutputTokens: 2048,
     temperature,
     apiKey: process.env.GOOGLE_API_KEY,
-    // Built-in retry: LangChain's BaseChatModel supports maxRetries
     maxRetries: 3,
+  });
+
+  const fallbackModel = new ChatGoogleGenerativeAI({
+    modelName: "gemini-1.5-flash", // Fallback to an older model which might have less load
+    maxOutputTokens: 2048,
+    temperature,
+    apiKey: process.env.GOOGLE_API_KEY,
+    maxRetries: 3,
+  });
+
+  // LangChain automatically routes to the fallback model if the primary model fails (e.g., 503 error)
+  return primaryModel.withFallbacks({
+    fallbacks: [fallbackModel]
   });
 };
