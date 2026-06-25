@@ -13,7 +13,7 @@
 ---
 
 ## 🌐 Live Demo
-**https://ai-investment-research-agent-lemon.vercel.app/**
+**https://ai-investment-research-agent-three.vercel.app/**
 > No setup needed — open and search any ticker instantly.
 
 ---
@@ -46,7 +46,7 @@ This application is an **AI Investment Research Agent** that takes a stock ticke
 - **npm** (comes with Node.js)
 - A **Google Gemini API Key** (free tier works) — get one at [aistudio.google.com](https://aistudio.google.com/apikey)
 
-**Alternatively**, visit the [live deployment](https://ai-investment-research-agent-lemon.vercel.app/) directly — no local setup required.
+**Alternatively**, visit the [live deployment](https://ai-investment-research-agent-three.vercel.app/) directly — no local setup required.
 
 ### Installation
 
