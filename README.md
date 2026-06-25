@@ -204,6 +204,8 @@ src/
 
 ### Example 1: Apple Inc. (AAPL)
 
+> 📅 Captured: June 24, 2026 — live data will vary.
+
 | Metric | Value |
 |--------|-------|
 | **Recommendation** | STRONG BUY |
@@ -224,6 +226,8 @@ src/
 
 ### Example 2: Tesla Inc. (TSLA)
 
+> 📅 Captured: June 24, 2026 — live data will vary.
+
 | Metric | Value |
 |--------|-------|
 | **Recommendation** | HOLD |
@@ -242,6 +246,8 @@ src/
 
 ### Example 3: NVIDIA Corp. (NVDA)
 
+> 📅 Captured: June 24, 2026 — live data will vary.
+
 | Metric | Value |
 |--------|-------|
 | **Recommendation** | BUY |
@@ -256,7 +262,29 @@ src/
 
 **Key Risks**: Customer concentration risk, export restrictions to China, extremely high valuation multiples.
 
-> **Note**: Scores may vary slightly between runs as the LLM generates fresh analysis each time, and real-time market data changes continuously.
+---
+
+### Example 4: Reliance Industries Ltd. (RELIANCE.NS)
+
+> 📅 Captured: June 25, 2026 — live data will vary.
+
+| Metric | Value |
+|--------|-------|
+| **Recommendation** | BUY |
+| **Confidence** | 78% |
+| **Overall Score** | 76/100 |
+| **Financial Health** | 82/100 |
+| **Growth Potential** | 80/100 |
+| **Market Sentiment** | 74/100 |
+| **Risk Safety** | 62/100 |
+| **Market Cap** | ₹19.8L Cr |
+| **Current Price** | ₹2,920.45 |
+
+**Key Opportunities**: Jio Platforms digital ecosystem (500M+ subscribers), rapid expansion of Reliance Retail (18,000+ stores), New Energy business with gigafactory investments, and dominant petrochemicals refining margins.
+
+**Key Risks**: High capital expenditure commitments across new ventures, regulatory scrutiny on telecom pricing, crude oil price volatility impacting O2C segment, and increasing competition from Airtel in telecom.
+
+> **Note**: Scores may vary slightly between runs as the LLM generates fresh analysis each time, and real-time market data changes continuously. Indian stocks use the `.NS` suffix (NSE) or `.BO` suffix (BSE).
 
 ---
 

@@ -5,9 +5,18 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
 import { ResearchReport } from "../types";
 
-// Static import — serverExternalPackages in next.config.ts ensures
-// Webpack does NOT bundle this, letting Node.js resolve the ESM export correctly.
-import yahooFinance from "yahoo-finance2";
+// yahoo-finance2 is ESM-only. Webpack mangles both static and dynamic imports
+// even with serverExternalPackages. eval() hides the import from Webpack's
+// static analysis, so Node.js handles it natively at runtime.
+// The default export is a CLASS CONSTRUCTOR — must be instantiated with new().
+let _yfInstance: any = null;
+async function getYahooFinance() {
+  if (_yfInstance) return _yfInstance;
+  const mod = await eval('import("yahoo-finance2")');
+  const YahooFinance = mod.default;
+  _yfInstance = new YahooFinance();
+  return _yfInstance;
+}
 
 // ─── Agent 1: Research Agent ─────────────────────────────────────────────────
 export const researchAgent = async (state: AgentState): Promise<Partial<AgentState>> => {
@@ -33,7 +42,8 @@ export const researchAgent = async (state: AgentState): Promise<Partial<AgentSta
 // ─── Agent 2: Financial Analysis Agent ───────────────────────────────────────
 export const financialAgent = async (state: AgentState): Promise<Partial<AgentState>> => {
   try {
-    const quote = await (yahooFinance as any).quote(state.ticker);
+    const yf = await getYahooFinance();
+    const quote = await yf.quote(state.ticker);
 
     const parser = StructuredOutputParser.fromZodSchema(z.object({
       financialScore: z.number().min(0).max(100),
