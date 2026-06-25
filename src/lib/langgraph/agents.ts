@@ -226,14 +226,9 @@ export const decisionAgent = async (state: AgentState): Promise<Partial<AgentSta
       overallScore: 50,
       recommendation: "HOLD",
       confidence: 50,
-      rawAnalysis: state.financialData?.rawAnalysis || "",
       opportunities: state.riskData?.opportunities || [],
       risks: state.riskData?.risks || [],
-      newsDevelopments: {
-        positive: state.newsData?.positiveDevelopments || [],
-        negative: state.newsData?.negativeDevelopments || [],
-        sources: state.newsData?.sources || []
-      },
+      sources: state.newsData?.sources || ["System Fallback"],
       reasoning: "The system is currently experiencing high demand. This is a graceful fallback report generated to prevent presentation failure."
     };
     return { finalReport };
