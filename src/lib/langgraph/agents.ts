@@ -42,8 +42,24 @@ export const researchAgent = async (state: AgentState): Promise<Partial<AgentSta
 // ─── Agent 2: Financial Analysis Agent ───────────────────────────────────────
 export const financialAgent = async (state: AgentState): Promise<Partial<AgentState>> => {
   try {
-    const yf = await getYahooFinance();
-    const quote = await yf.quote(state.ticker);
+    let quoteContext = "";
+    let marketData = null;
+
+    try {
+      const yf = await getYahooFinance();
+      const quote = await yf.quote(state.ticker);
+      marketData = {
+        currentPrice: quote.regularMarketPrice,
+        priceChange: quote.regularMarketChange,
+        priceChangePercent: quote.regularMarketChangePercent,
+        marketCap: quote.marketCap,
+        pe: quote.forwardPE
+      };
+      quoteContext = `Market Cap: ${quote.marketCap}\nPE Ratio: ${quote.forwardPE}\nPrice: ${quote.regularMarketPrice}\n52W High: ${quote.fiftyTwoWeekHigh}\n52W Low: ${quote.fiftyTwoWeekLow}`;
+    } catch (apiErr: any) {
+      console.warn(`[Yahoo Finance API Error] ${apiErr.message} - Falling back to LLM knowledge`);
+      quoteContext = "Note: Real-time market data is currently unavailable due to rate limits. Please estimate the financial health and growth scores based purely on your training knowledge for this ticker.";
+    }
 
     const parser = StructuredOutputParser.fromZodSchema(z.object({
       financialScore: z.number().min(0).max(100),
@@ -53,17 +69,19 @@ export const financialAgent = async (state: AgentState): Promise<Partial<AgentSt
 
     const response = await getGeminiModel(0.2).invoke([
       new SystemMessage("Analyze the financial health and growth potential. Generate scores (0-100). Be concise."),
-      new HumanMessage(`Ticker: ${state.ticker}\nMarket Cap: ${quote.marketCap}\nPE Ratio: ${quote.forwardPE}\nPrice: ${quote.regularMarketPrice}\n52W High: ${quote.fiftyTwoWeekHigh}\n52W Low: ${quote.fiftyTwoWeekLow}\n\n${parser.getFormatInstructions()}`)
+      new HumanMessage(`Ticker: ${state.ticker}\n\n${quoteContext}\n\n${parser.getFormatInstructions()}`)
     ]);
     const result = await parser.parse(response.content as string);
 
     return {
       financialData: {
-        marketCap: quote.marketCap || 0,
-        currentPrice: quote.regularMarketPrice || 0,
-        priceChange: quote.regularMarketChange || 0,
-        priceChangePercent: quote.regularMarketChangePercent || 0,
-        ...result
+        marketCap: marketData?.marketCap || 0,
+        currentPrice: marketData?.currentPrice || 0,
+        priceChange: marketData?.priceChange || 0,
+        priceChangePercent: marketData?.priceChangePercent || 0,
+        financialScore: result.financialScore,
+        growthScore: result.growthScore,
+        rawAnalysis: result.rawAnalysis
       }
     };
   } catch (err: any) {
